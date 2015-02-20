@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbe:messageSchema 
+    xmlns:sbe="http://www.fixprotocol.org/ns/simple/1.0"
+    package="sbe"
+    id="1"
+    version="1"
+    semanticVersion="1.0"
+    description=""
+    byteOrder="littleEndian">
+
+    <types>
+        <composite name="messageHeader">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+
+        <composite name="gmdPacketHdr">
+            <type name="protocolId" primitiveType="uint8"/>
+            <type name="headerLength" primitiveType="uint8"/>
+            <type name="packetCategory" primitiveType="uint8"/>
+            <type name="versionId" primitiveType="uint8"/>
+            <type name="packetLength" primitiveType="uint16"/>
+            <type name="numberOfMessages" primitiveType="uint16"/>
+            <type name="packetSequenceNumber" primitiveType="uint64"/>
+            <type name="sendTimestamp" primitiveType="uint64"/>
+        </composite>
+
+        <composite name="gmdMessageHdr">
+            <type name="messageType" primitiveType="uint16"/>
+            <type name="messageLength" primitiveType="uint16"/>
+            <type name="feedId" primitiveType="uint16"/>
+            <type name="messageHdrLength" primitiveType="uint8"/>
+            <type name="updateType" primitiveType="uint8"/>
+            <type name="exchangeSequenceNumber" primitiveType="uint64"/>
+            <type name="symbolSequenceNumber" primitiveType="uint32"/>
+            <type name="feedSubId" primitiveType="uint8"/>
+            <type name="reserved" primitiveType="char"/>
+            <type name="timeIndex" primitiveType="uint16"/>
+            <type name="exchangeTimeStamp" primitiveType="uint64"/>
+            <type name="acqTimeStamp" primitiveType="uint64"/>
+            <type name="turnKey" primitiveType="uint64"/>
+        </composite>
+
+        <composite name="gmdQuoteHdr">
+            <type name="symbol" primitiveType="char" length="24"/>
+            <type name="quoteCondition" primitiveType="char" length="4"/>
+            <type name="quoteFlags" primitiveType="uint16"/>
+        </composite>
+
+        <composite name="gmdSingleQuoteGroupHdr">
+            <type name="blockLength" primitiveType="uint8"/>
+            <type name="numInGroup" primitiveType="uint8"/>
+        </composite>
+
+        <type name="string2" primitiveType="char" length="2"/>
+        <type name="string5" primitiveType="char" length="5"/>
+        <type name="string24" primitiveType="char" length="24"/>
+    </types>
+
+    <sbe:message name="gmdLogonRequest" id="1">
+        <field name="packetHdr" id="1" type="gmdPacketHdr"/>
+        <field name="messageHdr" id="2" type="gmdMessageHdr"/>
+        <field name="accountType" id="3" type="char"/>
+        <field name="reserved" id="4" type="char"/>
+        <field name="clientInterfaceVersion" id="5" type="uint16"/>
+        <field name="clientId" id="6" type="string24"/>
+        <field name="password" id="7" type="string24"/>
+        <field name="deskId" id="8" type="string24"/>
+        <field name="firmId" id="9" type="string24"/>
+        <field name="clientVersion" id="10" type="string24"/>
+        <field name="usageType" id="11" type="string24"/>
+        <field name="sequenceRequest" id="12" type="uint64"/>
+    </sbe:message>
+
+    <sbe:message name="gmdSubscriptionRequest" id="2">
+        <field name="packetHdr" id="1" type="gmdPacketHdr"/>
+        <field name="messageHdr" id="2" type="gmdMessageHdr"/>
+        <field name="numberOfSymbols" id="3" type="uint16"/>
+        <field name="subscriptionInfoSize" id="4" type="uint8"/>
+        <field name="reserved1" id="5" type="string5"/>
+        <field name="symbol" id="6" type="string24"/>
+        <field name="feedId" id="7" type="uint16"/>
+        <field name="marketCenterId" id="8" type="uint8"/>
+        <field name="isRange" id="9" type="uint8"/>
+        <field name="messageTypeMask" id="10" type="uint16"/>
+        <field name="additionalBitMask" id="11" type="uint16"/>
+        <field name="keepSubActive" id="12" type="uint8"/>
+        <field name="subscriptionType" id="13" type="uint8"/>
+        <field name="numberOfLevels" id="14" type="uint16"/>
+        <field name="conflationFactor" id="15" type="uint16"/>
+        <field name="reserved2" id="16" type="string2"/>
+        <field name="turnKey" id="17" type="uint64"/>
+    </sbe:message>
+
+    <sbe:message name="gmdTrade" id="3">
+        <field name="packetHdr" id="1" type="gmdPacketHdr"/>
+        <field name="messageHdr" id="2" type="gmdMessageHdr"/>
+        <field name="symbol" id="3" type="string24"/>
+        <field name="tradePrice" id="4" type="int64"/>
+        <field name="tradeSize" id="5" type="uint32"/>
+    </sbe:message>
+
+    <sbe:message name="gmdQuote" id="4">
+        <field name="packetHdr" id="1" type="gmdPacketHdr"/>
+        <field name="messageHdr" id="2" type="gmdMessageHdr"/>
+        <field name="quoteHdr" id="3" type="gmdQuoteHdr"/>
+        <group name="singleQuoteGroup" id="4" dimensionType="gmdSingleQuoteGroupHdr">
+            <field name="quotePrice" id="5" type="int64"/>
+            <field name="quoteSize" id="6" type="uint32"/>
+            <field name="numberOfOrders" id="7" type="uint16"/>
+            <field name="side" id="8" type="char"/>
+            <field name="marketCenterId" id="9" type="uint8"/>
+            <field name="marketMakerId" id="10" type="uint32"/>
+            <field name="pad" id="11" type="uint16"/>
+            <field name="index" id="12" type="uint16"/>
+            <field name="feedId" id="13" type="uint16"/>
+            <field name="quoteFlags" id="14" type="uint8"/>
+            <field name="subMarketCenterId" id="15" type="uint8"/>
+            <field name="aggregateSize" id="16" type="uint32"/>
+        </group>
+    </sbe:message>
+
+</sbe:messageSchema>
