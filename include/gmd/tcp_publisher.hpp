@@ -27,10 +27,6 @@ public:
     // launch publishing thread
     void subscribe( handler* );
 
-    // dispatch at least min and at most max events to tracked handlers
-    // return actual number dispatched
-    size_t publish();
-
     // start a dedicated thread for dispatching to handler
     // thread will exit when all handlers complete
     // once started user cannot call subscribe
